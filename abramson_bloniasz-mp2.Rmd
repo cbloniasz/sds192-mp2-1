@@ -1,0 +1,22 @@
+---
+title: "Mini Project 2"
+author: "Mathena Abramson"
+date: "October 23, 2017"
+output: html_document
+---
+
+```{r, message = FALSE}
+library(tidyverse)
+library(tidyr)
+load("house_elections.rda")
+load("candidates.rda")
+load("committees.rda")
+load("contributions.rda")
+```
+
+```{r}
+glimpse(house_elections)
+```
+---
+##This class is great!
+---
