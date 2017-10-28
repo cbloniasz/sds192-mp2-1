@@ -16,7 +16,8 @@ load("contributions.rda")
 
 ```{r}
 glimpse(house_elections)
+glimpse(candidates)
+glimpse(committees)
+glimpse(contributions)
 ```
----
-##This class is great!
----
+
