@@ -25,21 +25,17 @@ cand12 <- candidates %>%
   filter(cand_office == "H")
   
 cand_contrib <- cand12 %>%
-  inner_join(contributions, by = "cand_id")
-
+  inner_join(contributions, by = "cand_id") %>%
+  select(1:8, -7, 16, 19, 21:23, 27:30, 35)
+  
 glimpse(cand_contrib)
 ```
 
 ```{r}
-sel_cand_cont <- cand_contrib %>%
-  select(1:8, -7, 16, 19, 21:23, 27:30, 35)
+new_comm <- select(committees, -15)
 
-glimpse(sel_cand_cont)
-```
-
-```{r}
-full_contrib <- sel_cand_cont %>%
-  inner_join(committees, by = "cmte_id")
+full_contrib <- cand_contrib %>%
+  inner_join(new_comm, by = "cmte_id")
 
 glimpse(full_contrib)
 ```
