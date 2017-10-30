@@ -35,7 +35,8 @@ glimpse(cand_contrib)
 new_comm <- select(committees, -15)
 
 full_contrib <- cand_contrib %>%
-  inner_join(new_comm, by = "cmte_id")
+  inner_join(new_comm, by = "cmte_id") %>%
+  select(1:12, 15:19, 25:30)
 
 glimpse(full_contrib)
 ```
