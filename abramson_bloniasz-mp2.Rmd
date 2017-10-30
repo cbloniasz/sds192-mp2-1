@@ -54,13 +54,11 @@ glimpse(full_contrib)
 cand_funct <- function(name_arg){
   full_contrib %>%
     filter(cand_name == name_arg) %>%
-    group_by(cand_election_yr) %>%
-    summarize(N = n(),
-    victory = sum(ifelse(ge_winner == "W", n, 0)) %>%
+    group_by(cand_name) %>%
     total_trans = sum(transaction_amt), avg_transaction = mean(transaction_amt)) %>%
 arrange(desc(cand_election_yr)) %>%
 ggplot(full_contrib, aes(x = cand_name, y = total_trans)) +
-  geom_bar(aes(fill = victory))
+  
   }
 
 name_funct(data = full_contrib, name_arg = "ROBY, MARTHA")
