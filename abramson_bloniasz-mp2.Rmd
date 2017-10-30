@@ -34,9 +34,19 @@ glimpse(cand_contrib)
 ```{r}
 new_comm <- select(committees, -15)
 
-full_contrib <- cand_contrib %>%
+comm_cand_contrib <- cand_contrib %>%
   inner_join(new_comm, by = "cmte_id") %>%
   select(1:12, 15:19, 25:30)
+arrange(comm_cand_contrib, cand_name)
+```
+
+```{r}
+house_elections <- house_elections %>%
+  rename(cand_id = fec_id)
+
+full_contrib <- comm_cand_contrib %>%
+  inner_join(house_elections, by = "cand_id")
 
 glimpse(full_contrib)
 ```
+
