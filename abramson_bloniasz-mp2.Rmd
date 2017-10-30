@@ -7,7 +7,6 @@ output: html_document
 
 ```{r, message = FALSE}
 library(tidyverse)
-library(tidyr)
 load("house_elections.rda")
 load("candidates.rda")
 load("committees.rda")
@@ -21,3 +20,26 @@ glimpse(committees)
 glimpse(contributions)
 ```
 
+```{r}
+cand12 <- candidates %>%
+  filter(cand_office == "H")
+  
+cand_contrib <- cand12 %>%
+  inner_join(contributions, by = "cand_id")
+
+glimpse(cand_contrib)
+```
+
+```{r}
+sel_cand_cont <- cand_contrib %>%
+  select(1:8, -7, 16, 19, 21:23, 27:30, 35)
+
+glimpse(sel_cand_cont)
+```
+
+```{r}
+full_contrib <- sel_cand_cont %>%
+  inner_join(committees, by = "cmte_id")
+
+glimpse(full_contrib)
+```
