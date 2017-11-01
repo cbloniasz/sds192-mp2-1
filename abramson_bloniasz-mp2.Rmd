@@ -51,23 +51,19 @@ glimpse(full_contrib)
 ```
 
 ```{r}
-full_contrib %>%
-  group_by(cand_name) %>%
-  summarize(total = sum(transaction_amt))
-```
-
-```{r}
-cand_funct <- function(name_arg){
+state_funct <- function(state_arg) {
   full_contrib %>%
-    filter(cand_name == name_arg) %>%
+    filter(state == state_arg) %>%
     group_by(cand_name) %>%
-    summarize(N = n(),
-    victory = sum(ifelse(ge_winner == "W", n, 0)) %>%
-    total_trans = sum(transaction_amt), avg_transaction = mean(transaction_amt)) %>%
-arrange(desc(cand_election_yr)) %>%
-ggplot(full_contrib, aes(x = cand_name, y = total_trans)) +
-  geom_bar(aes(fill = victory))
-  }
+    summarize(total_transaction = sum(transaction_amt), 
+              victory = any(ge_winner == "W"),
+              district = first(district)) %>%
+ggplot(aes(x = cand_name, y = total_transaction)) +
+    geom_bar(stat = "identity", aes(fill = victory)) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    
+}
 
-name_funct(data = full_contrib, name_arg = "ROBY, MARTHA")
+state_funct(state_arg = "MA")
 ```
+
