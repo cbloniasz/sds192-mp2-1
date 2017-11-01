@@ -11,6 +11,7 @@ load("house_elections.rda")
 load("candidates.rda")
 load("committees.rda")
 load("contributions.rda")
+library(ggthemes)
 ```
 
 ```{r}
@@ -58,12 +59,17 @@ state_funct <- function(state_arg) {
     summarize(total_transaction = sum(transaction_amt), 
               victory = any(ge_winner == "W"),
               district = first(district)) %>%
-ggplot(aes(x = cand_name, y = total_transaction)) +
+    ggplot(aes(x = cand_name, y = total_transaction)) +
     geom_bar(stat = "identity", aes(fill = victory)) +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "U.S. House of Representatives Candidates") +
+  labs(y = "Sum of Contributions Recieved ") +
+  labs(title = "Total Contributions Recieved by House of Representatives Candidates") 
     
 }
 
-state_funct(state_arg = "MA")
+NE_cand <- c("ME", "NH", "VT", "MA", "RI", "CT")
+lapply(NE_cand, FUN = state_funct()) %>%
+  unlist()
 ```
-
