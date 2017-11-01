@@ -4,8 +4,13 @@ author: "Mathena Abramson"
 date: "October 23, 2017"
 output: html_document
 ---
+# **Can Contributions to Candidates Influence Election Results?**
 
-```{r, message = FALSE}
+*Examining Total Contributions Recieved by House of Representatives Candidates and The Election Outcomes*
+
+***
+
+```{r, echo=FALSE, message = FALSE}
 library(tidyverse)
 load("house_elections.rda")
 load("candidates.rda")
@@ -14,13 +19,7 @@ load("contributions.rda")
 library(ggthemes)
 ```
 
-```{r}
-glimpse(house_elections)
-glimpse(candidates)
-glimpse(committees)
-glimpse(contributions)
-```
-
+*Joining the contributions and candidates datasets.*
 ```{r}
 cand12 <- candidates %>%
   filter(cand_office == "H")
@@ -29,18 +28,17 @@ cand_contrib <- cand12 %>%
   inner_join(contributions, by = "cand_id") %>%
   select(1:8, -7, 16, 19, 21:23, 27:30, 35)
   
-glimpse(cand_contrib)
 ```
-
-```{r}
+*Joining the combined cand_contrib dataset with committee dataset.*
+```{r message=FALSE, warning=FALSE}
 new_comm <- select(committees, -15)
 
 comm_cand_contrib <- cand_contrib %>%
   inner_join(new_comm, by = "cmte_id") %>%
   select(1:12, 15:19, 25:30)
-arrange(comm_cand_contrib, cand_name)
-```
 
+```
+*Joining the combined com_cand_contrib dataset with house_election dataset.*
 ```{r}
 house_elections <- house_elections %>%
   rename(cand_id = fec_id)
@@ -48,10 +46,10 @@ house_elections <- house_elections %>%
 full_contrib <- comm_cand_contrib %>%
   inner_join(house_elections, by = "cand_id")
 
-glimpse(full_contrib)
 ```
+*During elections, there are various factors that can contribute to a candidate's win. We set out to explore how the sum of contributions from committees to individual candidates impacted whether the candidate was elected during the 2011-2012 House Elections. We also wanted to determine whether this potential relationship was consistent among the six New England states (ie. ME, NH, VT, MA, RI, VT). In order to examine these relationships, we joined the metadata master packages `candidates`, `committees`, `contributions`, and `house_elections`, from the `fec` data package. Using this data, we used lapply() to iterate a function plotting contributions and election outcomes for House of Representative candidates in each of the six New England states. As a result, we created six bar graphs showing a weak relationship between sum of contributions and the election outcomes.*
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 state_funct <- function(state_arg) {
   full_contrib %>%
     filter(state == state_arg) %>%
@@ -61,11 +59,19 @@ state_funct <- function(state_arg) {
               district = first(district)) %>%
     ggplot(aes(x = cand_name, y = total_transaction)) +
     geom_bar(stat = "identity", aes(fill = victory)) +
-    scale_fill_manual(values = c("#004f71", "#465a01")) +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(x = "U.S. House of Representatives Candidates") +
-  labs(y = "Sum of Contributions Recieved ") +
-  labs(title = "Total Contributions Recieved by House of Representatives Candidates")
+    
+  scale_y_continuous(labels = scales::dollar) +
+    ggtitle(state_arg) +
+    guides(fill = guide_legend(title = "Election Outcome")) +
+    scale_fill_manual(labels = c("win", "loss"), values = c("#deb81e", "#b5c7c9")) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1),
+          plot.title = element_text(hjust = 0.5),
+          panel.grid.major=element_blank(),
+          panel.grid.minor=element_blank(),
+          plot.background=element_blank(),
+          text = element_text(family = "Futura Medium")) +
+  labs(x = "U.S. House of Representatives Candidates",
+       y = "Sum of Contributions Recieved (U.S. Dollars)")
     
 }
 
@@ -73,3 +79,6 @@ state_funct <- function(state_arg) {
 NE_cand <- c("ME", "NH", "VT", "MA", "RI", "CT")    
 lapply(NE_cand, FUN = state_funct)
 ```
+
+*Looking at these graphics, in four out of the six states, the candidates who received the highest sum of contributions won their elections. However, this was not a consistent trend across all six states. In the state of NH, the two candidates who received the highest sum of contributions lost their campaigns. In CT, candidate Andrew Roraback had received almost double the contribution amount of the next highest funded candidate Elizabeth Esty, yet he still lost his race. Additionally, there were several candidates. Overall, it appears that a high amount of total contributions did not necessarily impact the results of the House of Representatives 2011-2012 elections in the New England states. There are too many inconsistencies to support a relationship. Other factors such as party affiliation and whether or not the candidate was incumbent should be analyzed in conjunction with contribution amounts to see if any relationships emerge within the data.*  
+
