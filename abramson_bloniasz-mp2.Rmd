@@ -61,15 +61,15 @@ state_funct <- function(state_arg) {
               district = first(district)) %>%
     ggplot(aes(x = cand_name, y = total_transaction)) +
     geom_bar(stat = "identity", aes(fill = victory)) +
-
+    scale_fill_manual(values = c("#004f71", "#465a01")) +
     theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(x = "U.S. House of Representatives Candidates") +
   labs(y = "Sum of Contributions Recieved ") +
-  labs(title = "Total Contributions Recieved by House of Representatives Candidates") 
+  labs(title = "Total Contributions Recieved by House of Representatives Candidates")
     
 }
 
-NE_cand <- c("ME", "NH", "VT", "MA", "RI", "CT")
-lapply(NE_cand, FUN = state_funct()) %>%
-  unlist()
+
+NE_cand <- c("ME", "NH", "VT", "MA", "RI", "CT")    
+lapply(NE_cand, FUN = state_funct)
 ```
